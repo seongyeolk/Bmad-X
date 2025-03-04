@@ -1,5 +1,5 @@
 from collections import namedtuple
-from bmadx.constants import M_ELECTRON
+from bmadx.constants import M_PROTON, M_ELECTRON
 
 Particle = namedtuple('Particle', 'x px y py z pz s p0c mc2')
 
@@ -16,6 +16,31 @@ Quadrupole = namedtuple(
         'TILT'
     ],
     defaults=(None, None, 1, 0.0, 0.0, 0.0)
+)
+
+Drift_sc = namedtuple(
+    'Drift_sc',
+    [
+        'L',
+        'I',
+        'fscc'
+    ],
+    defaults=(None, None, None)
+)
+
+Quadrupole_sc = namedtuple(
+    'Quadrupole_sc',
+    [
+        'L',
+        'K1',
+        'I',
+        'fscc',
+        'NUM_STEPS',
+        'X_OFFSET',
+        'Y_OFFSET',
+        'TILT'
+    ],
+    defaults=(None, None, 0.0, 0.0, 1, 0.0, 0.0, 0.0)
 )
 
 Sextupole = namedtuple(
