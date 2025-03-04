@@ -4,7 +4,7 @@ from torch import Tensor
 from torch.nn import Module, ModuleList, Parameter
 
 from bmadx.structures import Particle
-from bmadx.constants import M_ELECTRON
+from bmadx.constants import M_ELECTRON, M_PROTON
 from bmadx import LIB_DICT
 
 
@@ -88,7 +88,7 @@ class TorchDrift(TorchElement):
         )
         self.register_parameter("L", Parameter(L, requires_grad=False))
         
-
+        
 class TorchQuadrupole(TorchElement):
     def __init__(
         self,
@@ -111,6 +111,47 @@ class TorchQuadrupole(TorchElement):
         self.register_parameter("TILT", Parameter(TILT, requires_grad=False))
         self.register_parameter("K1", Parameter(K1, requires_grad=False))
 
+# TorchElement for space charge calculation. 2025. 02. 06 Seongyeol Kim
+class TorchDrift_sc(TorchElement):
+    def __init__(
+        self,
+        L: Tensor,
+        I: Tensor,
+        fscc: Tensor
+    ):
+        super(TorchDrift_sc, self).__init__(
+            LIB_DICT[torch]['tracking_routine']['Drift_sc']
+        )
+        self.register_parameter("L", Parameter(L, requires_grad=False))
+        self.register_parameter("I", Parameter(I, requires_grad=False))
+        self.register_parameter("fscc", Parameter(fscc, requires_grad=False))
+        
+class TorchQuadrupole_sc(TorchElement):
+    def __init__(
+        self,
+        L: Tensor,
+        K1: Tensor,
+        I: Tensor,
+        fscc: Tensor,
+        NUM_STEPS: int = 1,
+        X_OFFSET: Tensor = torch.tensor(0.0),
+        Y_OFFSET: Tensor = torch.tensor(0.0),
+        TILT: Tensor = torch.tensor(0.0)
+    ):
+        super(TorchQuadrupole_sc, self).__init__(
+            LIB_DICT[torch]['tracking_routine']['Quadrupole_sc']
+        )
+        self.register_parameter("L", Parameter(L, requires_grad=False))
+        self.register_parameter("I", Parameter(I, requires_grad=False))
+        self.register_parameter("fscc", Parameter(fscc, requires_grad=False))
+        self.register_parameter("X_OFFSET", Parameter(X_OFFSET, requires_grad=False))
+        self.register_parameter("Y_OFFSET", Parameter(Y_OFFSET, requires_grad=False))
+        self.register_parameter(
+            "NUM_STEPS", Parameter(torch.tensor(NUM_STEPS), requires_grad=False)
+        )
+        self.register_parameter("TILT", Parameter(TILT, requires_grad=False))
+        self.register_parameter("K1", Parameter(K1, requires_grad=False))
+        
 class TorchSextupole(TorchElement):
     def __init__(
         self,
